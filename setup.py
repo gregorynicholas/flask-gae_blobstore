@@ -23,7 +23,7 @@ setup(
   author='gregorynicholas',
   description='Flask extension module for working with file upload on App Engine.',
   long_description=__doc__,
-  py_modules=['gae_deploy'],
+  py_modules=['gae_upload'],
   # packages=['flaskext'],
   # namespace_packages=['flaskext'],
   include_package_data=True,
@@ -33,7 +33,7 @@ setup(
   install_requires=[
     'Flask'
   ],
-  test_suite='gae_deploy_tests',
+  test_suite='gae_upload_tests',
   classifiers=[
     'Development Status :: 4 - Beta',
     'Environment :: Web Environment',
