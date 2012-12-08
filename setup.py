@@ -2,7 +2,7 @@
 Flask App Engine Upload
 -----------------------
 
-Flask extension module for working with file upload on App Engine.
+Flask extension module for working with the files api on App Engine.
 
 Links
 `````

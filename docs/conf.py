@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'FlaskAppEngineUpload', u'Flask App Engine Upload Documentation',
-   u'Gregory Nicholas', 'FlaskAppEngineUpload', 'Flask extension module for working with file upload on App Engine.',
+   u'Gregory Nicholas', 'FlaskAppEngineUpload', 'Flask extension module for working with the files api on App Engine.',
    'Miscellaneous'),
 ]
 
