@@ -1,8 +1,8 @@
 """
-  flaskext.gae_upload
+  gae_blobstore
   ~~~~~~~~~~~~~~~~~~~
 
-  Flask extension module for working with file upload on App Engine.
+  Flask extension module for working with the blobstore & files api on App Engine.
 
   :copyright: (c) 2012 by gregorynicholas.
   :license: BSD, see LICENSE for more details.

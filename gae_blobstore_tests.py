@@ -7,7 +7,7 @@ except ImportError:
   dev_appserver.fix_sys_path()
 
 import unittest
-import gae_upload
+import gae_blobstore
 from flask import json
 from flask import Flask, Request
 from flask.testsuite import FlaskTestCase
@@ -23,19 +23,26 @@ class _Request(Request):
   def _get_file_stream(*args, **kwargs):
     return FileObj()
 
+class TestModel:
+  blob_key = None
+
 # test application..
 app = Flask(__name__)
 app.debug = True
 app.request_class = _Request
 
-
 @app.route('/test_upload1', methods=['POST', 'OPTIONS', 'HEAD', 'PUT'])
-@gae_upload.upload_blobs()
+@gae_blobstore.upload_blobs()
 def test_upload1(blobs):
+  entities = []
+  for blob in blobs:
+    entity = TestModel(
+      blob_key=blob.blob_key)
+    entities.append(entity)
+  # ndb.put_multi(entities)
   return json.dumps(blobs.to_dict())
 
 class TestCase(FlaskTestCase):
-
   def setUp(self):
     FlaskTestCase.setUp(self)
     # First, create an instance of the Testbed class.
