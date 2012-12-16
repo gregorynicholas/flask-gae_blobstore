@@ -10,10 +10,8 @@ import logging
 
 app = Flask(__name__)
 app.debug = True
-# blobstore = gae_blobstore.Blobstore()
 
 @app.route('/test', methods=gae_blobstore.OPTIONS)
-# @blobstore.upload
 @gae_blobstore.upload_blobs()
 def test(blobs):
   logging.info(request.form)
