@@ -1,0 +1,12 @@
+# Application configuration.
+
+application: flask-gae-blobstore
+version: 1-0
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+
+- url: .*
+  script: app.app

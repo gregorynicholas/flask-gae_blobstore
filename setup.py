@@ -26,8 +26,7 @@ setup(
   py_modules=['gae_blobstore'],
   # packages=['flaskext'],
   # namespace_packages=['flaskext'],
-  include_package_data=True,
-  data_files=[('', ['test_file.jpg'])],
+  include_package_data=False,
   zip_safe=False,
   platforms='any',
   install_requires=[
