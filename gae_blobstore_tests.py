@@ -13,34 +13,46 @@ from flask import Flask, Request
 from flask.testsuite import FlaskTestCase
 from google.appengine.api import files
 from google.appengine.ext import testbed
+from google.appengine.ext import ndb
 from StringIO import StringIO
 
-class FileObj(StringIO):
+
+# test helpers..
+
+class TestFileStream(StringIO):
   def close(self):
     print 'in file close..'
 
-class _Request(Request):
+class TestRequest(Request):
   def _get_file_stream(*args, **kwargs):
-    return FileObj()
-
-class TestModel:
-  blob_key = None
+    return TestFileStream()
 
 # test application..
+
+class TestModel(ndb.Model):
+  blob_key = ndb.BlobKeyProperty()
+
 app = Flask(__name__)
 app.debug = True
-app.request_class = _Request
+app.request_class = TestRequest
 
 @app.route('/test_upload1', methods=['POST', 'OPTIONS', 'HEAD', 'PUT'])
 @gae_blobstore.upload_blobs()
 def test_upload1(blobs):
   entities = []
-  for blob in blobs:
-    entity = TestModel(
-      blob_key=blob.blob_key)
-    entities.append(entity)
-  # ndb.put_multi(entities)
+  try:
+    for blob in blobs:
+      entity = TestModel(
+        blob_key=blob.blob_key)
+      entities.append(entity)
+    ndb.put_multi(entities)
+  except:
+    # rollback the operation and delete the blobs so they are not orphaned.
+    raise ValueError(entities)
   return json.dumps(blobs.to_dict())
+
+
+# test cases..
 
 class TestCase(FlaskTestCase):
   def setUp(self):
@@ -67,13 +79,13 @@ class TestCase(FlaskTestCase):
     self.assertNotEquals(None, blobkey)
 
   def test_upload_returns_valid_blob_result(self):
-    filename = 'test_file.jpg'
-    f = open(filename, 'r')
+    test_filename = 'test.jpg'
+    f = open('./test/' + test_filename, 'r')
     data = f.read()
     size = len(data)
     f.close()
     response = app.test_client().post(
-      data={'test': (StringIO(data), 'test_file.jpg')},
+      data={'test': (StringIO(data), test_filename)},
       path='/test_upload1',
       headers={},
       query_string={})
@@ -83,7 +95,7 @@ class TestCase(FlaskTestCase):
     self.assertEquals(1, len(result))
     self.assertEquals(True, result[0].get('successful'))
     # check the file name is the same..
-    self.assertEquals(filename, result[0].get('name'))
+    self.assertEquals(test_filename, result[0].get('name'))
     # check file size is the same..
     self.assertEquals(size, result[0].get('size'))
     # validate the blob_key..
