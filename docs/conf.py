@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'FlaskAppEngineBlobstore', u'Flask App Engine Blobstore Documentation',
-   u'Gregory Nicholas', 'FlaskAppEngineBlobstore', 'Flask extension module for working with the blobstore & files api on App Engine.',
+   u'Gregory Nicholas', 'FlaskAppEngineBlobstore', 'Flask extension for working with the blobstore & files api on App Engine.',
    'Miscellaneous'),
 ]
 
