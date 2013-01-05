@@ -1,43 +1,50 @@
+#!/usr/bin/env python
 """
-Flask App Engine Blobstore
+flask-gae_blobstore
 -----------------------
 
-Flask extension module for working with the blobstore & files api on App Engine.
+Flask extension for working with the blobstore & files apis on
+App Engine.
 
 Links
 `````
 
-* `documentation <http://packages.python.org/Flask%20App%20Engine%20Blobstore>`_
+* `documentation <http://packages.python.org/flask-gae_blobstore>`_
 * `development version
   <http://github.com/gregorynicholas/flask-gae_blobstore/zipball/master#egg=flask_gae_blobstore-dev>`_
 
 """
 from setuptools import setup
 
-
 setup(
-  name='Flask App Engine Blobstore',
+  name='flask-gae_blobstore',
   version='1.0.0',
   url='http://github.com/gregorynicholas/flask-gae_blobstore',
-  license='BSD',
+  license='MIT',
   author='gregorynicholas',
-  description='Flask extension module for working with the blobstore & files api on App Engine.',
+  description='Flask extension module for working with the blobstore & files \
+apis on App Engine.',
   long_description=__doc__,
   py_modules=['gae_blobstore'],
   # packages=['flaskext'],
   # namespace_packages=['flaskext'],
   include_package_data=False,
+  data_files=[],
   zip_safe=False,
   platforms='any',
   install_requires=[
-    'Flask'
+    'flask',
+    'flask_gae_tests',
+  ],
+  dependency_links = [
+    'https://github.com/gregorynicholas/flask-gae_tests/tarball/master',
   ],
   test_suite='gae_blobstore_tests',
   classifiers=[
     'Development Status :: 4 - Beta',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
+    'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',

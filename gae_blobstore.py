@@ -2,7 +2,8 @@
   gae_blobstore
   ~~~~~~~~~~~~~~~~~~~
 
-  Flask extension module for working with the blobstore & files api on App Engine.
+  Flask extension for working with the blobstore & files apis on
+  App Engine.
 
   :copyright: (c) 2012 by gregorynicholas.
   :license: BSD, see LICENSE for more details.
