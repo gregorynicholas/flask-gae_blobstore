@@ -24,9 +24,9 @@ app = Flask(__name__)
 app.debug = True
 app.request_class = gae_tests.FileUploadRequest
 
-@app.route('/test_upload1', methods=['POST', 'OPTIONS', 'HEAD', 'PUT'])
+@app.route('/test_upload', methods=['POST', 'OPTIONS', 'HEAD', 'PUT'])
 @gae_blobstore.upload_blobs()
-def test_upload1(blobs):
+def test_upload(blobs):
   entities = []
   try:
     for blob in blobs:
@@ -35,10 +35,11 @@ def test_upload1(blobs):
       entities.append(entity)
     ndb.put_multi(entities)
   except:
-    # rollback the operation and delete the blobs so they are not orphaned..
+    # rollback the operation and delete the blobs,
+    # so they are not orphaned..
     for blob in blobs:
       blob.delete()
-    raise Exception('File upload failed..')
+    raise Exception('Saving file upload info to datastore failed..')
   return json.dumps(blobs.to_dict())
 
 
@@ -59,7 +60,7 @@ class TestCase(gae_tests.TestCase):
     data, filename, size = gae_tests.open_test_file('test.jpg')
     response = app.test_client().post(
       data={'test': (data, filename)},
-      path='/test_upload1',
+      path='/test_upload',
       headers={},
       query_string={})
     self.assertEqual(200, response.status_code)
