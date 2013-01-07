@@ -25,7 +25,7 @@ setup(
   description='Flask extension module for working with the blobstore & files \
 apis on App Engine.',
   long_description=__doc__,
-  py_modules=['gae_blobstore'],
+  py_modules=['flask_gae_blobstore'],
   # packages=['flaskext'],
   # namespace_packages=['flaskext'],
   include_package_data=True,
@@ -34,12 +34,15 @@ apis on App Engine.',
   platforms='any',
   install_requires=[
     'flask',
+  ],
+  tests_require=[
+    'nose',
     'flask_gae_tests',
   ],
   dependency_links = [
     'https://github.com/gregorynicholas/flask-gae_tests/tarball/master',
   ],
-  test_suite='gae_blobstore_tests',
+  test_suite='nose.collector',
   classifiers=[
     'Development Status :: 4 - Beta',
     'Environment :: Web Environment',

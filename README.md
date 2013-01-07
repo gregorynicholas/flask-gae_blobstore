@@ -7,7 +7,7 @@ Flask extension for working with the blobstore & files api on App Engine.
 ----
 
 ### install with pip
-`pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master
+`pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master`
 
 ### usage
 

@@ -1,16 +1,35 @@
-.. Flask App Engine Upload documentation master file, created by
-   sphinx-quickstart on Thu Dec  6 14:38:14 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+flask-gae_blobstore
+===================
 
-Welcome to Flask App Engine Upload's documentation!
-===================================================
+.. module:: flask_gae_blobstore
 
-Contents:
+Flask extension for working with the blobstore & files api on App Engine.
 
-.. toctree::
-   :maxdepth: 2
+Links
+-----
 
+* `documentation <http://packages.python.org/flask-gae_blobstore/>`_
+* `source <http://github.com/gregorynicholas/flask-gae_blobstore>`_
+* :doc:`changelog </changelog>`
+
+Installing flask-gae_blobstore
+------------------------------
+
+Install with **pip**
+
+`pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master`
+
+
+
+
+
+API
+---
+
+.. module:: flask_gae_blobstore
+
+.. autoclass:: MessageTemplate
+   :members: sender, subject, template_html, template_text
 
 
 Indices and tables
