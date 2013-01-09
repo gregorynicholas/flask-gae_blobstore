@@ -7,10 +7,10 @@ except ImportError:
   dev_appserver.fix_sys_path()
 
 import unittest
-import gae_blobstore
 from flask import json
 from flask import Flask
 from flask.ext import gae_tests
+from flask.ext import gae_blobstore
 from google.appengine.api import files
 from google.appengine.ext import ndb
 
