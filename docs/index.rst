@@ -1,22 +1,22 @@
-Flask App Engine Blobstore
-==========================
+Flask App Engine Messages
+======================================
 
-Flask extension for working with the blobstore & files api on App Engine.
+`Flask`_ extension for working with messages using the mail & xmpp apis on `App Engine`_.
 
 Links
 -----
 
 * :ref:`genindex`
-* `documentation <http://packages.python.org/flask-gae_blobstore/>`_
-* `source <http://github.com/gregorynicholas/flask-gae_blobstore>`_
+* `documentation <http://packages.python.org/flask-gae_messages>`_
+* `source <http://github.com/gregorynicholas/flask-gae_messages>`_
 * :doc:`changelog </changelog>`
 
-Installing flask-gae_blobstore
+Installing flask-gae_messages
 ------------------------------
 
 Install with **pip**
 
-    `pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master`
+    `pip install https://github.com/gregorynicholas/flask-gae_messages/tarball/master`
 
 
 
@@ -24,27 +24,29 @@ Install with **pip**
 API
 ---
 
-.. module:: flask_gae_blobstore
+.. module:: flask_gae_messages
 
-  :members: WRITE_MAX_RETRIES, WRITE_SLEEP_SECONDS, DEFAULT_NAME_LEN, MSG_INVALID_FILE_POSTED, UPLOAD_MIN_FILE_SIZE, UPLOAD_MAX_FILE_SIZE, UPLOAD_ACCEPT_FILE_TYPES, ORIGINS, OPTIONS, HEADERS, MIMETYPE
+.. autoclass:: MessageTemplate
+   :members: sender, subject, template_html, template_text
 
-.. autoclass:: RemoteResponse
-
-.. autoclass:: FieldResultSet
-
-.. autoclass:: FieldResult
-
-.. autofunction:: upload_blobs
-
-.. autofunction:: validate
-
-.. autofunction:: save_blobs
-
-.. autofunction:: get_field_size
-
-.. autofunction:: write_to_blobstore
+.. autoclass:: Method
+   :members: SMS, XMPP, EMAIL, FLASH
 
 
+.. autoclass:: Message
+
+   .. automethod:: send(to, context, method=Method.EMAIL)
+
+
+.. autofunction:: queue
+
+.. autofunction:: send_mail
+
+.. autofunction:: send_sms
+
+.. autofunction:: send_xmpp
+
+.. autofunction:: send_flash
 
 
 ----
