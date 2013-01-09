@@ -126,10 +126,9 @@ class FieldResult:
     }
 
 def upload_blobs(validations=None):
-  '''Method decorator for writing posted files to the blobstore using the
+  '''Method decorator for writing posted files to the `blobstore` using the
   App Engine files api. Passes an argument to the method with a list of
-  `FieldResult` with BlobKey, name, type, size for each posted input
-  file.
+  `FieldResult` with `BlobKey`, name, type, size for each posted input file.
 
     :param validations:
   '''

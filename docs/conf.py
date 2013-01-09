@@ -14,6 +14,14 @@
 import sys, os
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.append(os.path.abspath('_themes'))
+
+try:
+  # a hack to see if the app engine sdk is loaded..
+  import yaml
+except ImportError:
+  import dev_appserver
+  dev_appserver.fix_sys_path()
+
 html_theme_path = ['_themes']
 html_theme = 'flask'
 
@@ -29,7 +37,7 @@ html_theme = 'flask'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
