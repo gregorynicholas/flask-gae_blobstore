@@ -8,6 +8,12 @@
   :copyright: (c) 2012 by gregorynicholas.
   :license: BSD, see LICENSE for more details.
 """
+try:
+  # a hack to see if the app engine sdk is loaded..
+  import yaml
+except ImportError:
+  import dev_appserver
+  dev_appserver.fix_sys_path()
 import re
 import time
 # Uses of a deprecated module 'string'
