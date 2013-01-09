@@ -26,5 +26,6 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+docs/_build
 docs/build
 .DS_Store
