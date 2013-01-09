@@ -1,5 +1,5 @@
 """
-  gae_blobstore
+  flask_gae_blobstore
   ~~~~~~~~~~~~~~~~~~~
 
   Flask extension for working with the blobstore & files apis on
@@ -8,12 +8,6 @@
   :copyright: (c) 2012 by gregorynicholas.
   :license: BSD, see LICENSE for more details.
 """
-try:
-  # a hack to see if the app engine sdk is loaded..
-  import yaml
-except ImportError:
-  import dev_appserver
-  dev_appserver.fix_sys_path()
 import re
 import time
 # Uses of a deprecated module 'string'
@@ -27,7 +21,12 @@ from functools import wraps
 from google.appengine.api import files
 from google.appengine.ext import blobstore
 
-__all__ = []
+__all__ = ['delete', 'delete_async', 'fetch_data', 'fetch_data_async',
+'WRITE_MAX_RETRIES', 'WRITE_SLEEP_SECONDS', 'DEFAULT_NAME_LEN',
+'MSG_INVALID_FILE_POSTED', 'UPLOAD_MIN_FILE_SIZE', 'UPLOAD_MAX_FILE_SIZE',
+'UPLOAD_ACCEPT_FILE_TYPES', 'ORIGINS', 'OPTIONS', 'HEADERS', 'MIMETYPE',
+'RemoteResponse', 'FieldResultSet', 'FieldResult', 'upload_blobs',
+'save_blobs', 'write_to_blobstore']
 
 delete = blobstore.delete
 delete_async = blobstore.delete_async
@@ -62,7 +61,11 @@ HEADERS = ['Accept', 'Content-Type', 'Origin', 'X-Requested-With']
 MIMETYPE = 'application/json'
 
 class RemoteResponse(Response):
-  '''Base class for remote service `Response` objects.'''
+  '''Base class for remote service `Response` objects.
+
+    :param response:
+    :param mimetype:
+  '''
   default_mimetype = MIMETYPE
   def __init__(self, response=None, mimetype=None, *args, **kw):
     if mimetype is None:
