@@ -4,6 +4,8 @@
 
 Flask extension for working with the blobstore & files api on App Engine.
 
+[![Build Status](https://travis-ci.org/gregorynicholas/flask-gae_blobstore.png?branch=master)](https://travis-ci.org/gregorynicholas/flask-gae_blobstore)
+
 ----
 
 ### install with pip
