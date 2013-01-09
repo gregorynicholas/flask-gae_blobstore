@@ -1,0 +1,3 @@
+flask
+blinker
+https://github.com/gregorynicholas/flask-gae_tests/tarball/master
