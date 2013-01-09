@@ -37,7 +37,7 @@ Flask extension for working with the blobstore & files api on App Engine.
         # rollback the operation and delete the blobs,
         # so they are not orphaned..
         for blob in blobs:
-          blob.delete()
+          gae_blobstore.delete(blob.blob_key)
         raise Exception('Saving file upload info to datastore failed..')
       return json.dumps(blobs.to_dict())
 

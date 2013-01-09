@@ -21,25 +21,38 @@ from functools import wraps
 from google.appengine.api import files
 from google.appengine.ext import blobstore
 
+__all__ = []
+
 delete = blobstore.delete
 delete_async = blobstore.delete_async
 fetch_data = blobstore.fetch_data
 fetch_data_async = blobstore.fetch_data_async
 
+#:
 WRITE_MAX_RETRIES = 3
+#:
 WRITE_SLEEP_SECONDS = 0.05
+#:
 DEFAULT_NAME_LEN = 20
+#:
 MSG_INVALID_FILE_POSTED = 'Invalid file posted.'
 
+#:
 UPLOAD_MIN_FILE_SIZE = 1
+#:
 UPLOAD_MAX_FILE_SIZE = 1024*1024
 # set by default to images..
+#:
 UPLOAD_ACCEPT_FILE_TYPES = re.compile('image/(gif|p?jpeg|jpg|(x-)?png|tiff)')
 
 # todo: need a way to easily configure these values..
+#:
 ORIGINS = '*'
+#:
 OPTIONS = ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT']
+#:
 HEADERS = ['Accept', 'Content-Type', 'Origin', 'X-Requested-With']
+#:
 MIMETYPE = 'application/json'
 
 class RemoteResponse(Response):
@@ -58,12 +71,25 @@ class RemoteResponse(Response):
 
 class FieldResultSet(list):
   def to_dict(self):
+    '''
+      :returns:
+    '''
     result = []
     for field in self:
       result.append(field.to_dict())
     return result
 
 class FieldResult:
+  '''
+    :param successful:
+    :param error_msg:
+    :param blob_key:
+    :param name:
+    :param type:
+    :param size:
+    :param field:
+    :param value:
+  '''
   def __init__(self, name, type, size, field, value):
     self.successful = False
     self.error_msg = ''
@@ -75,6 +101,9 @@ class FieldResult:
     self.value = value
 
   def to_dict(self):
+    '''
+      :returns:
+    '''
     return {
       'successful': self.successful,
       'error_msg': self.error_msg,
@@ -108,6 +137,9 @@ def save_blobs(fields, validations=None):
   each posted file.
 
     :param fields:
+    :param validations:
+
+    :returns:
   '''
   results = FieldResultSet()
   i = 0
@@ -138,7 +170,9 @@ def save_blobs(fields, validations=None):
   return results
 
 def _upload_fields():
-  '''Return a list of tuples with name of the file and stream as value.'''
+  '''
+    :returns: Returns a list of tuples with name of the file & stream as value.
+  '''
   result = []
   for key, value in request.files.iteritems():
     if type(value) is not unicode:
@@ -146,6 +180,11 @@ def _upload_fields():
   return result
 
 def get_field_size(field):
+  '''
+    :param field:
+
+    :returns:
+  '''
   try:
     field.seek(0, 2) # Seek to the end of the file
     size = field.tell() # Get the position of EOF
@@ -165,6 +204,8 @@ def validate(field,
     :param accept_file_types:
     :param min_file_size:
     :param max_file_size:
+
+    :returns:
   '''
   if field.size < UPLOAD_MIN_FILE_SIZE:
     field.error_msg = 'min_file_size'
@@ -184,6 +225,8 @@ def write_to_blobstore(data, mime_type, name=None):
     :param data:
     :param mime_type:
     :param name:
+
+    :returns:
   '''
   if not name:
     name = ''.join(random.choice(string.letters)
