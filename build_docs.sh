@@ -15,3 +15,5 @@ git pull origin gh-pages
 git push origin gh-pages
 
 git checkout -f master
+
+rm -rf .nojekyll ./*.html searchindex.js objects.inv _static/ _sources/
