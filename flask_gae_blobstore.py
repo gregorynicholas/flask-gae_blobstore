@@ -162,10 +162,20 @@ def save_blobs(fields, validations=None):
       size=len(value),
       field=field,
       value=value)
-    if not validate(result):
-      result.successful = False
-      result.error_msg = MSG_INVALID_FILE_POSTED
-      logging.warn('Error in file upload: %s', result.error_msg)
+    if validations:
+      for fn in validations:
+        if not fn(result):
+          result.successful = False
+          result.error_msg = MSG_INVALID_FILE_POSTED
+          logging.warn('Error in file upload: %s', result.error_msg)
+        else:
+          result.blob_key = write_to_blobstore(
+            result.value, result.type, result.name)
+          if result.blob_key:
+            result.successful = True
+          else:
+            result.successful = False
+          results.append(result)
     else:
       result.blob_key = write_to_blobstore(
         result.value, result.type, result.name)
