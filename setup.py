@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
   name='flask-gae_blobstore',
-  version='1.0.0',
+  version='1.0.1',
   url='http://github.com/gregorynicholas/flask-gae_blobstore',
   license='MIT',
   author='gregorynicholas',
@@ -28,8 +28,8 @@ apis on App Engine.',
   py_modules=['flask_gae_blobstore'],
   # packages=['flaskext'],
   # namespace_packages=['flaskext'],
-  include_package_data=True,
-  data_files=['test.jpg'],
+  # include_package_data=True,
+  # package_data={'': ['test.jpg']},
   zip_safe=False,
   platforms='any',
   install_requires=[

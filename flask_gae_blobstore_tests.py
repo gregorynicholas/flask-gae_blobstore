@@ -57,7 +57,7 @@ class TestCase(gae_tests.TestCase):
     self.assertNotEquals(None, blobkey)
 
   def test_upload_returns_valid_blob_result(self):
-    data, filename, size = gae_tests.open_test_file('test.jpg')
+    data, filename, size = gae_tests.create_test_file('test.jpg')
     response = app.test_client().post(
       data={'test': (data, filename)},
       path='/test_upload',
