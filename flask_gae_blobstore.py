@@ -170,7 +170,7 @@ def save_blobs(fields, validations=None):
           logging.warn('Error in file upload: %s', result.error_msg)
         else:
           result.blob_key = write_to_blobstore(
-            result.value, result.type, result.name)
+            result.value, mime_type=result.type, name=result.name)
           if result.blob_key:
             result.successful = True
           else:
@@ -178,7 +178,7 @@ def save_blobs(fields, validations=None):
           results.append(result)
     else:
       result.blob_key = write_to_blobstore(
-        result.value, result.type, result.name)
+        result.value, mime_type=result.type, name=result.name)
       if result.blob_key:
         result.successful = True
       else:
@@ -246,9 +246,9 @@ def write_to_blobstore(data, mime_type, name=None):
 
     :returns:
   '''
-  if not name:
-    name = ''.join(random.choice(string.letters)
-      for x in range(DEFAULT_NAME_LEN))
+  # if not name:
+  #   name = ''.join(random.choice(string.letters)
+  #     for x in range(DEFAULT_NAME_LEN))
   try:
     blob = files.blobstore.create(
       mime_type=mime_type,
