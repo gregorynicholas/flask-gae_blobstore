@@ -160,7 +160,7 @@ def save_blobs(fields, validators=None):
     value = field.stream.read()
     result = BlobUploadResult(
       name=re.sub(r'^.*\\', '', field.filename.decode('utf-8')),
-      type=_parse_mime_type(field),
+      type=field.content_type,
       size=len(value),
       field=field,
       value=value)
@@ -288,44 +288,6 @@ def write_to_blobstore(data, mime_type, name=None):
     logging.exception('Exception writing to the blobstore: %s',
       traceback.format_exc())
 
-
-def _split_mime_type(mime_type):
-  '''Split MIME-type in to main and sub type.
-
-    :param mime_type:
-      String value for the mime type. ex: "application/octet-stream"
-  '''
-  if mime_type:
-    mime_type_array = mime_type.split('/')
-    if len(mime_type_array) == 1:
-        raise ValueError('Missing MIME sub-type.')
-    elif len(mime_type_array) == 2:
-      main_type, sub_type = mime_type_array
-      if not(main_type and sub_type):
-        raise ValueError(
-            'Incorrectly formatted MIME type: %s' % mime_type)
-      return main_type, sub_type
-    else:
-      raise ValueError(
-          'Incorrectly formatted MIME type: %s' % mime_type)
-  else:
-    return 'application', 'octet-stream'
-
-try:
-  from email.mime import base
-except ImportError:
-  from email import MIMEBase as base
-
-def _parse_mime_type(field):
-  '''
-    :param field:
-      FieldStorage instance that represents a specific form field. This instance
-      should have a non-empty filename attribute, meaning that it is an uploaded
-      blob rather than a normal form field.
-  '''
-  main_type, sub_type = _split_mime_type(field.content_type)
-  formatter = base.MIMEBase(main_type, sub_type, **field.type_options)
-  return formatter['content-type'].decode('utf-8')
 
 def send_blob_download():
   '''Sends a file to a client for downloading.
