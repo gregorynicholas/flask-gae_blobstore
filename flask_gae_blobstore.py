@@ -219,8 +219,8 @@ def validate_max_size(result, max_file_size=UPLOAD_MAX_FILE_SIZE):
     :param max_file_size:
     :returns: Boolean if field validates.
   '''
-  if result.field.size > max_file_size:
-    result.field.error_msg = 'max_file_size'
+  if result.size > max_file_size:
+    result.error_msg = 'max_file_size'
     return False
   return True
 
@@ -231,8 +231,8 @@ def validate_min_size(result, min_file_size=UPLOAD_MIN_FILE_SIZE):
     :param min_file_size:
     :returns: Boolean if field validates.
   '''
-  if result.field.size < min_file_size:
-    result.field.error_msg = 'min_file_size'
+  if result.size < min_file_size:
+    result.error_msg = 'min_file_size'
     return False
   return True
 
