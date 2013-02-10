@@ -245,7 +245,7 @@ def validate_file_type(result, accept_file_types=UPLOAD_ACCEPT_FILE_TYPES):
     :returns: Boolean if field validates.
   '''
   # only allow images to be posted to this handler
-  if not accept_file_types.match(result.field.type):
+  if not accept_file_types.match(result.field.mimetype):
     result.field.error_msg = 'accept_file_types'
     return False
   return True
