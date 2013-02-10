@@ -25,7 +25,7 @@ __all__ = ['delete', 'delete_async', 'fetch_data', 'fetch_data_async',
 'WRITE_MAX_RETRIES', 'WRITE_SLEEP_SECONDS', 'DEFAULT_NAME_LEN',
 'MSG_INVALID_FILE_POSTED', 'UPLOAD_MIN_FILE_SIZE', 'UPLOAD_MAX_FILE_SIZE',
 'UPLOAD_ACCEPT_FILE_TYPES', 'ORIGINS', 'OPTIONS', 'HEADERS', 'MIMETYPE',
-'RemoteResponse', 'FieldResultSet', 'FieldResult', 'upload_blobs',
+'RemoteResponse', 'BlobUploadResultSet', 'BlobUploadResult', 'upload_blobs',
 'save_blobs', 'write_to_blobstore']
 
 delete = blobstore.delete
@@ -78,17 +78,17 @@ class RemoteResponse(Response):
     self.headers['Access-Control-Allow-Methods'] = ', '.join(OPTIONS)
     self.headers['Access-Control-Allow-Headers'] = ', '.join(HEADERS)
 
-class FieldResultSet(list):
+class BlobUploadResultSet(list):
   def to_dict(self):
     '''
-      :returns:
+      :returns: List of `BlobUploadResult` as `dict`s.
     '''
     result = []
     for field in self:
       result.append(field.to_dict())
     return result
 
-class FieldResult:
+class BlobUploadResult:
   '''
     :param successful:
     :param error_msg:
@@ -125,45 +125,47 @@ class FieldResult:
       # 'value': self.value,
     }
 
-def upload_blobs(validations=None):
+def upload_blobs(validators=None):
   '''Method decorator for writing posted files to the `blobstore` using the
   App Engine files api. Passes an argument to the method with a list of
-  `FieldResult` with `BlobKey`, name, type, size for each posted input file.
+  `BlobUploadResult` with `BlobKey`, name, type, size for each posted input file.
 
-    :param validations:
+    :param validators: List of callable objects.
   '''
-  def wrapper(func):
-    @wraps(func)
+  def wrapper(fn):
+    @wraps(fn)
     def decorated(*args, **kw):
-      return func(blobs=save_blobs(
-        fields=_upload_fields(), validations=validations), *args, **kw)
+      return fn(uploads=save_blobs(
+        fields=_upload_fields(), validators=validators), *args, **kw)
     return decorated
   return wrapper
 
-def save_blobs(fields, validations=None):
-  '''Returns a list of `FieldResult` with BlobKey, name, type, size for
+def save_blobs(fields, validators=None):
+  '''Returns a list of `BlobUploadResult` with BlobKey, name, type, size for
   each posted file.
 
-    :param fields:
-    :param validations:
+    :param fields: List of `cgi.FieldStorage` objects.
+    :param validators: List of callable objects.
 
     :returns:
   '''
-  results = FieldResultSet()
+  if validators is None:
+    validators = [
+      validate_file_type,
+      validate_min_size,
+      validate_max_size]
+  results = BlobUploadResultSet()
   i = 0
-  # validate_file_type=False,
-  # validate_min_file_size=False,
-  # validate_max_file_size=False
   for name, field in fields:
     value = field.stream.read()
-    result = FieldResult(
-      name=re.sub(r'^.*\\', '', field.filename),
-      type=field.content_type,
+    result = BlobUploadResult(
+      name=re.sub(r'^.*\\', '', field.filename.decode('utf-8')),
+      type=_parse_mime_type(field),
       size=len(value),
       field=field,
       value=value)
-    if validations:
-      for fn in validations:
+    if validators:
+      for fn in validators:
         if not fn(result):
           result.successful = False
           result.error_msg = MSG_INVALID_FILE_POSTED
@@ -189,7 +191,7 @@ def save_blobs(fields, validations=None):
 
 def _upload_fields():
   '''
-    :returns: Returns a list of tuples with name of the file & stream as value.
+    :returns: List of tuples with the filename & `cgi.FieldStorage` as value.
   '''
   result = []
   for key, value in request.files.iteritems():
@@ -199,9 +201,8 @@ def _upload_fields():
 
 def get_field_size(field):
   '''
-    :param field:
-
-    :returns:
+    :param field: Instance of `cgi.FieldStorage`.
+    :returns: Integer.
   '''
   try:
     field.seek(0, 2) # Seek to the end of the file
@@ -211,30 +212,43 @@ def get_field_size(field):
   except:
     return 0
 
-def validate(field,
-    accept_file_types=UPLOAD_ACCEPT_FILE_TYPES,
-    min_file_size=UPLOAD_MIN_FILE_SIZE,
-    max_file_size=UPLOAD_MAX_FILE_SIZE):
-  '''Validates a file input based on size & type. If validation fails, adds
-  an error property to the field arg dict.
+def validate_max_size(result, max_file_size=UPLOAD_MAX_FILE_SIZE):
+  '''Validates an upload input based on maximum size.
 
-    :param field:
-    :param accept_file_types:
-    :param min_file_size:
+    :param result: Instance of `BlobUploadResult`.
     :param max_file_size:
-
-    :returns:
+    :returns: Boolean if field validates.
   '''
-  if field.size < UPLOAD_MIN_FILE_SIZE:
-    field.error_msg = 'min_file_size'
-  elif field.size > UPLOAD_MAX_FILE_SIZE:
-    field.error_msg = 'max_file_size'
+  if result.field.size > max_file_size:
+    result.field.error_msg = 'max_file_size'
+    return False
+  return True
+
+def validate_min_size(result, min_file_size=UPLOAD_MIN_FILE_SIZE):
+  '''Validates an upload input based on minimum size.
+
+    :param result: Instance of `BlobUploadResult`.
+    :param min_file_size:
+    :returns: Boolean if field validates.
+  '''
+  if result.field.size < min_file_size:
+    result.field.error_msg = 'min_file_size'
+    return False
+  return True
+
+def validate_file_type(result, accept_file_types=UPLOAD_ACCEPT_FILE_TYPES):
+  '''Validates an upload input based on accepted mime types.
+  If validation fails, sets an error property to the field arg dict.
+
+    :param result: Instance of `BlobUploadResult`.
+    :param accept_file_types:
+    :returns: Boolean if field validates.
+  '''
   # only allow images to be posted to this handler
-  elif not accept_file_types.match(field.type):
-    field.error_msg = 'accept_file_types'
-  else:
-    return True
-  return False
+  if not accept_file_types.match(result.field.type):
+    result.field.error_msg = 'accept_file_types'
+    return False
+  return True
 
 def write_to_blobstore(data, mime_type, name=None):
   '''Writes a file to the App Engine blobstore and returns an instance of a
@@ -246,9 +260,9 @@ def write_to_blobstore(data, mime_type, name=None):
 
     :returns:
   '''
-  # if not name:
-  #   name = ''.join(random.choice(string.letters)
-  #     for x in range(DEFAULT_NAME_LEN))
+  if not name:
+    name = ''.join(random.choice(string.letters)
+      for x in range(DEFAULT_NAME_LEN))
   try:
     blob = files.blobstore.create(
       mime_type=mime_type,
@@ -273,3 +287,61 @@ def write_to_blobstore(data, mime_type, name=None):
     import traceback
     logging.exception('Exception writing to the blobstore: %s',
       traceback.format_exc())
+
+
+def _split_mime_type(mime_type):
+  '''Split MIME-type in to main and sub type.
+
+    :param mime_type:
+      String value for the mime type. ex: "application/octet-stream"
+  '''
+  if mime_type:
+    mime_type_array = mime_type.split('/')
+    if len(mime_type_array) == 1:
+        raise ValueError('Missing MIME sub-type.')
+    elif len(mime_type_array) == 2:
+      main_type, sub_type = mime_type_array
+      if not(main_type and sub_type):
+        raise ValueError(
+            'Incorrectly formatted MIME type: %s' % mime_type)
+      return main_type, sub_type
+    else:
+      raise ValueError(
+          'Incorrectly formatted MIME type: %s' % mime_type)
+  else:
+    return 'application', 'octet-stream'
+
+try:
+  from email.mime import base
+except ImportError:
+  from email import MIMEBase as base
+
+def _parse_mime_type(field):
+  '''
+    :param field:
+      FieldStorage instance that represents a specific form field. This instance
+      should have a non-empty filename attribute, meaning that it is an uploaded
+      blob rather than a normal form field.
+  '''
+  main_type, sub_type = _split_mime_type(field.content_type)
+  formatter = base.MIMEBase(main_type, sub_type, **field.type_options)
+  return formatter['content-type'].decode('utf-8')
+
+def send_blob_download():
+  '''Sends a file to a client for downloading.
+
+    :param data: Stream data that will be sent as the file contents.
+    :param filename: String name of the file.
+    :param contenttype:
+  '''
+  def wrapper(fn):
+    @wraps(fn)
+    def decorated(*args, **kw):
+      data, filename, contenttype = fn(*args, **kw)
+      headers = {
+        'Content-Type': contenttype,
+        'Content-Encoding': contenttype,
+        'Content-Disposition': 'attachment; filename={}'.format(filename)}
+      return Response(data, headers=headers)
+    return decorated
+  return wrapper
