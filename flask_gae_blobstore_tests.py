@@ -38,7 +38,7 @@ def test_upload(uploads):
     # rollback the operation and delete the blobs,
     # so they are not orphaned..
     for upload in uploads:
-      upload.blob.delete()
+      gae_blobstore.delete(upload.blob_key)
     raise Exception('Saving file upload info to datastore failed..')
   return json.dumps(uploads.to_dict())
 
@@ -64,16 +64,18 @@ class TestCase(gae_tests.TestCase):
       headers={},
       query_string={})
     self.assertEqual(200, response.status_code)
-    result = json.loads(response.data)
-    self.assertIsInstance(result, list)
-    self.assertEquals(1, len(result))
-    self.assertEquals(True, result[0].get('successful'))
+    results = json.loads(response.data)
+    self.assertIsInstance(results, list)
+    self.assertEquals(1, len(results), results)
+
+    result = results[0]
+    self.assertEquals(True, result['successful'])
     # check the file name is the same..
-    self.assertEquals(filename, result[0].get('name'))
+    self.assertEquals(filename, result['name'])
     # check file size is the same..
-    self.assertEquals(size, result[0].get('size'))
+    self.assertEquals(size, result['size'])
     # validate the blob_key..
-    self.assertTrue(len(result[0].get('blob_key')) > 0)
+    self.assertTrue(len(result['blob_key']) > 0)
 
 
 if __name__ == '__main__':

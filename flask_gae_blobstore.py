@@ -151,9 +151,10 @@ def save_blobs(fields, validators=None):
   '''
   if validators is None:
     validators = [
-      validate_file_type,
       validate_min_size,
-      validate_max_size]
+      # validate_file_type,
+      # validate_max_size,
+    ]
   results = BlobUploadResultSet()
   i = 0
   for name, field in fields:
@@ -177,7 +178,7 @@ def save_blobs(fields, validators=None):
             result.successful = True
           else:
             result.successful = False
-          results.append(result)
+      results.append(result)
     else:
       result.blob_key = write_to_blobstore(
         result.value, mime_type=result.type, name=result.name)
@@ -245,7 +246,7 @@ def validate_file_type(result, accept_file_types=UPLOAD_ACCEPT_FILE_TYPES):
     :returns: Boolean if field validates.
   '''
   # only allow images to be posted to this handler
-  if not accept_file_types.match(result.field.mimetype):
+  if not accept_file_types.match(result.type):
     result.field.error_msg = 'accept_file_types'
     return False
   return True
