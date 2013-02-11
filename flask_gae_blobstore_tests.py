@@ -6,7 +6,7 @@ except ImportError:
   import dev_appserver
   dev_appserver.fix_sys_path()
 
-import unittest
+import unittest, logging
 from flask import json
 from flask import Flask
 from flask.ext import gae_tests
@@ -33,6 +33,8 @@ def test_upload(uploads):
       entity = TestModel(
         blob_key=upload.blob_key)
       entities.append(entity)
+      blob_info = upload.blob_info
+      logging.info('upload.blob_info: %s', blob_info)
     ndb.put_multi(entities)
   except:
     # rollback the operation and delete the blobs,
@@ -75,6 +77,7 @@ class TestCase(gae_tests.TestCase):
     # check file size is the same..
     self.assertEquals(size, result['size'])
     # validate the blob_key..
+    blob_key = gae_blobstore.blobstore.BlobKey(result['blob_key'])
     self.assertTrue(len(result['blob_key']) > 0)
 
 

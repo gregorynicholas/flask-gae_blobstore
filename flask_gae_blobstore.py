@@ -109,6 +109,10 @@ class BlobUploadResult:
     self.field = field
     self.value = value
 
+  @property
+  def blob_info(self):
+    return blobstore.get(self.blob_key)
+
   def to_dict(self):
     '''
       :returns:
@@ -182,6 +186,7 @@ def save_blobs(fields, validators=None):
     else:
       result.blob_key = write_to_blobstore(
         result.value, mime_type=result.type, name=result.name)
+      logging.error('result.blob_key: %s', result.blob_key)
       if result.blob_key:
         result.successful = True
       else:
