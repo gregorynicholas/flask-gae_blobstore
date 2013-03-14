@@ -5,7 +5,7 @@
   Flask extension for working with the blobstore & files apis on
   App Engine.
 
-  :copyright: (c) 2012 by gregorynicholas.
+  :copyright: (c) 2013 by gregorynicholas.
   :license: BSD, see LICENSE for more details.
 """
 import re
@@ -20,8 +20,9 @@ from werkzeug import exceptions
 from functools import wraps
 from google.appengine.api import files
 from google.appengine.ext import blobstore
+from google.appengine.ext.blobstore import BlobKey
 
-__all__ = ['delete', 'delete_async', 'fetch_data', 'fetch_data_async',
+__all__ = ['delete', 'delete_async', 'fetch_data', 'fetch_data_async', 'BlobKey',
 'WRITE_MAX_RETRIES', 'WRITE_SLEEP_SECONDS', 'DEFAULT_NAME_LEN',
 'MSG_INVALID_FILE_POSTED', 'UPLOAD_MIN_FILE_SIZE', 'UPLOAD_MAX_FILE_SIZE',
 'UPLOAD_ACCEPT_FILE_TYPES', 'ORIGINS', 'OPTIONS', 'HEADERS', 'MIMETYPE',
@@ -115,7 +116,7 @@ class BlobUploadResult:
 
   def to_dict(self):
     '''
-      :returns:
+      :returns: Instance of a dict.
     '''
     return {
       'successful': self.successful,
@@ -151,7 +152,7 @@ def save_blobs(fields, validators=None):
     :param fields: List of `cgi.FieldStorage` objects.
     :param validators: List of callable objects.
 
-    :returns:
+    :returns: Instance of a `BlobUploadResultSet`.
   '''
   if validators is None:
     validators = [
@@ -222,8 +223,8 @@ def validate_max_size(result, max_file_size=UPLOAD_MAX_FILE_SIZE):
   '''Validates an upload input based on maximum size.
 
     :param result: Instance of `BlobUploadResult`.
-    :param max_file_size:
-    :returns: Boolean if field validates.
+    :param max_file_size: Integer.
+    :returns: Boolean, True if field validates.
   '''
   if result.size > max_file_size:
     result.error_msg = 'max_file_size'
@@ -234,8 +235,8 @@ def validate_min_size(result, min_file_size=UPLOAD_MIN_FILE_SIZE):
   '''Validates an upload input based on minimum size.
 
     :param result: Instance of `BlobUploadResult`.
-    :param min_file_size:
-    :returns: Boolean if field validates.
+    :param min_file_size: Integer.
+    :returns: Boolean, True if field validates.
   '''
   if result.size < min_file_size:
     result.error_msg = 'min_file_size'
@@ -247,8 +248,8 @@ def validate_file_type(result, accept_file_types=UPLOAD_ACCEPT_FILE_TYPES):
   If validation fails, sets an error property to the field arg dict.
 
     :param result: Instance of `BlobUploadResult`.
-    :param accept_file_types:
-    :returns: Boolean if field validates.
+    :param accept_file_types: Instance of a regex.
+    :returns: Boolean, True if field validates.
   '''
   # only allow images to be posted to this handler
   if not accept_file_types.match(result.type):
@@ -260,11 +261,11 @@ def write_to_blobstore(data, mime_type, name=None):
   '''Writes a file to the App Engine blobstore and returns an instance of a
   BlobKey if successful.
 
-    :param data:
-    :param mime_type:
-    :param name:
+    :param data: Blob data.
+    :param mime_type: String, mime type of the blob.
+    :param name: String, name of the blob.
 
-    :returns:
+    :returns: Instance of a `BlobKey`.
   '''
   if not name:
     name = ''.join(random.choice(string.letters)
@@ -299,8 +300,8 @@ def send_blob_download():
   '''Sends a file to a client for downloading.
 
     :param data: Stream data that will be sent as the file contents.
-    :param filename: String name of the file.
-    :param contenttype:
+    :param filename: String, name of the file.
+    :param contenttype: String, content-type of the file.
   '''
   def wrapper(fn):
     @wraps(fn)

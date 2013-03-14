@@ -58,6 +58,19 @@ class TestCase(gae_tests.TestCase):
     blobkey = files.blobstore.get_blob_key(filename)
     self.assertNotEquals(None, blobkey)
 
+  def _assertUploadResult(self, result, filename, size):
+    self.assertEquals(True, result['successful'])
+    # check the file name is the same..
+    self.assertEquals(filename, result['name'])
+    # check file size is the same..
+    self.assertEquals(size, result['size'])
+    # validate the blob_key..
+    self.assertTrue(len(result['blob_key']) > 0)
+    blob_key = gae_blobstore.BlobKey(result['blob_key'])
+    blob_info = gae_blobstore.blobstore.get(blob_key)
+    self.assertEquals(blob_info.filename, filename)
+    self.assertEquals(blob_info.size, size)
+
   def test_upload_returns_valid_blob_result(self):
     data, filename, size = gae_tests.create_test_file('test.jpg')
     response = app.test_client().post(
@@ -69,16 +82,35 @@ class TestCase(gae_tests.TestCase):
     results = json.loads(response.data)
     self.assertIsInstance(results, list)
     self.assertEquals(1, len(results), results)
+    self._assertUploadResult(results[0], filename, size)
 
-    result = results[0]
-    self.assertEquals(True, result['successful'])
-    # check the file name is the same..
-    self.assertEquals(filename, result['name'])
-    # check file size is the same..
-    self.assertEquals(size, result['size'])
-    # validate the blob_key..
-    blob_key = gae_blobstore.blobstore.BlobKey(result['blob_key'])
-    self.assertTrue(len(result['blob_key']) > 0)
+  def test_multiple_uploads_return_all_results(self):
+    testfiles = [gae_tests.create_test_file('test%d.jpg' % x) for x in range(5)]
+    tests = {x[0]: (x[0], x[1]) for x in testfiles}
+    response = app.test_client().post(
+      data=tests,
+      path='/test_upload',
+      headers={},
+      query_string={})
+    self.assertEqual(200, response.status_code)
+    results = json.loads(response.data)
+    self.assertIsInstance(results, list)
+    self.assertEquals(len(testfiles), len(results), results)
+    for testfile, result in zip(testfiles, results):
+        filename = testfile[1]
+        size = testfile[2]
+        self._assertUploadResult(result, filename, size)
+
+  def test_empty_upload_post_returns_empty_list(self):
+    response = app.test_client().post(
+      data={'test': ''},
+      path='/test_upload',
+      headers={},
+      query_string={})
+    self.assertEqual(200, response.status_code)
+    results = json.loads(response.data)
+    self.assertIsInstance(results, list)
+    self.assertEquals(0, len(results), results)
 
 
 if __name__ == '__main__':
