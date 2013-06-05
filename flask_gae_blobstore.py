@@ -20,7 +20,7 @@ from werkzeug import exceptions
 from functools import wraps
 from google.appengine.api import files
 from google.appengine.ext import blobstore
-from google.appengine.ext.blobstore import BlobKey
+from google.appengine.ext.blobstore import BlobKey, create_rpc
 
 __all__ = ['delete', 'delete_async', 'fetch_data', 'fetch_data_async', 'BlobKey',
 'WRITE_MAX_RETRIES', 'WRITE_SLEEP_SECONDS', 'DEFAULT_NAME_LEN',
@@ -270,30 +270,26 @@ def write_to_blobstore(data, mime_type, name=None):
   if not name:
     name = ''.join(random.choice(string.letters)
       for x in range(DEFAULT_NAME_LEN))
-  try:
-    blob = files.blobstore.create(
-      mime_type=mime_type,
-      _blobinfo_uploaded_filename=name)
-    with files.open(blob, 'a', exclusive_lock=True) as f:
-      f.write(data)
-    files.finalize(blob)
-    result = files.blobstore.get_blob_key(blob)
-    # issue with the local development SDK. we can only write to the blobstore
-    # so fast, so set a retry_count and delay the execution thread between
-    # each attempt..
-    for i in range(1, WRITE_MAX_RETRIES):
-      if result:
-        break
-      else:
-        logging.debug('blob still None.. will retry to write to blobstore..')
-        time.sleep(WRITE_SLEEP_SECONDS)
-        result = files.blobstore.get_blob_key(blob)
-      logging.debug('File written to blobstore: key: "%s"', result)
-    return result
-  except:
-    import traceback
-    logging.exception('Exception writing to the blobstore: %s',
-      traceback.format_exc())
+
+  blob = files.blobstore.create(
+    mime_type=mime_type,
+    _blobinfo_uploaded_filename=name)
+  with files.open(blob, 'a', exclusive_lock=True) as f:
+    f.write(data)
+  files.finalize(blob)
+  result = files.blobstore.get_blob_key(blob)
+  # issue with the local development SDK. we can only write to the blobstore
+  # so fast, so set a retry_count and delay the execution thread between
+  # each attempt..
+  for i in range(1, WRITE_MAX_RETRIES):
+    if result:
+      break
+    else:
+      logging.debug('blob still None.. will retry to write to blobstore..')
+      time.sleep(WRITE_SLEEP_SECONDS)
+      result = files.blobstore.get_blob_key(blob)
+    logging.debug('File written to blobstore: key: "%s"', result)
+  return result
 
 
 def send_blob_download():
