@@ -1,27 +1,29 @@
-Flask App Engine Blobstore
-==========================
+flask-gae_blobstore
+===================
 
 `Flask`_ extension for working with the blobstore & files api on `App Engine`_.
 
-Links
+
+links
 -----
 
 * :ref:`genindex`
-* `documentation <http://packages.python.org/flask-gae_blobstore/>`_
+* `docs <http://gregorynicholas.github.io/flask-gae_blobstore>`_
 * `source <http://github.com/gregorynicholas/flask-gae_blobstore>`_
+* `package <http://packages.python.org/flask-gae_blobstore>`_
+* `travis-ci <http://travis-ci.org/gregorynicholas/flask-gae_blobstore>`_
 * :doc:`changelog </changelog>`
 
-Installing flask-gae_blobstore
-------------------------------
 
-Install with **pip**
+getting started
+---------------
 
-    `pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master`
+install with **pip**
+
+    pip install flask-gae_blobstore
 
 
-
-
-API
+api
 ---
 
 .. module:: flask_gae_blobstore
@@ -51,8 +53,6 @@ API
 .. autofunction:: get_field_size
 
 .. autofunction:: write_to_blobstore
-
-
 
 
 ----
