@@ -1,48 +1,56 @@
 #!/usr/bin/env python
 """
 flask-gae_blobstore
------------------------
+~~~~~~~~~~~~~~~~~~~
 
-Flask extension for working with the blobstore & files apis on
-App Engine.
+flask extension for working with the blobstore & files apis on
+app engine.
 
-Links
+
+links
 `````
 
-* `documentation <http://packages.python.org/flask-gae_blobstore>`_
-* `development version
-  <http://github.com/gregorynicholas/flask-gae_blobstore/zipball/master#egg=flask_gae_blobstore-dev>`_
+* `docs <http://gregorynicholas.github.io/flask-gae_blobstore>`_
+* `source <http://github.com/gregorynicholas/flask-gae_blobstore>`_
+* `package <http://packages.python.org/flask-gae_blobstore>`_
+* `travis-ci <http://travis-ci.org/gregorynicholas/flask-gae_blobstore>`_
 
 """
 from setuptools import setup
 
+__version__ = "1.0.2"
+
+with open("requirements.txt", "r") as f:
+  requires = f.readlines()
+
+with open("README.md", "r") as f:
+  long_description = f.readlines()
+
+
 setup(
   name='flask-gae_blobstore',
-  version='1.0.2',
+  version=__version__,
   url='http://github.com/gregorynicholas/flask-gae_blobstore',
   license='MIT',
   author='gregorynicholas',
-  description='Flask extension module for working with the blobstore & files \
-apis on App Engine.',
-  long_description=__doc__,
-  py_modules=['flask_gae_blobstore'],
-  # packages=['flaskext'],
-  # namespace_packages=['flaskext'],
-  # include_package_data=True,
-  # package_data={'': ['test.jpg']},
+  author_email='gn@gregorynicholas.com',
+  description=__doc__,
+  long_description=long_description,
+  py_modules=[
+    'flask_gae_blobstore',
+    'flask_gae_blobstore_tests',
+  ],
   zip_safe=False,
   platforms='any',
   install_requires=[
-    'flask',
+    'flask==0.9',
   ],
   tests_require=[
-    'nose',
-    'flask_gae_tests',
+    'flask_gae_tests==1.0.1',
   ],
-  dependency_links = [
-    'https://github.com/gregorynicholas/flask-gae_tests/tarball/master',
+  dependency_links=[
   ],
-  test_suite='nose.collector',
+  test_suite='flask_gae_blobstore_tests',
   classifiers=[
     'Development Status :: 4 - Beta',
     'Environment :: Web Environment',
