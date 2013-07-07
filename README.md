@@ -1,17 +1,47 @@
-# flask-gae_blobstore
+flask-gae_blobstore
+===================
 
---------------
+flask extension for working with the blobstore & files apis on
+app engine.
 
-Flask extension for working with the blobstore & files api on App Engine.
 
 [![Build Status](https://secure.travis-ci.org/gregorynicholas/flask-gae_blobstore.png?branch=master)](https://travis-ci.org/gregorynicholas/flask-gae_blobstore)
 
+
+* [docs](http://gregorynicholas.github.io/flask-gae_blobstore)
+* [source](http://github.com/gregorynicholas/flask-gae_blobstore)
+* [package](http://packages.python.org/flask-gae_blobstore)
+* [changelog](https://github.com/gregorynicholas/flask-gae_blobstore/blob/master/CHANGES.md)
+* [travis-ci](http://travis-ci.org/gregorynicholas/flask-gae_blobstore)
+
+
 ----
 
-### install with pip
-`pip install https://github.com/gregorynicholas/flask-gae_blobstore/tarball/master`
 
-### usage
+### getting started
+
+install with *pip*:
+
+    pip install flask-gae_blobstore
+
+
+-----
+
+
+### overview
+
+* [todo]
+
+
+### features
+
+* [todo]
+
+
+-----
+
+
+### example usage
 
     from flask.ext import gae_blobstore
     from flask import json
@@ -40,5 +70,3 @@ Flask extension for working with the blobstore & files api on App Engine.
           gae_blobstore.delete(blob.blob_key)
         raise Exception('Saving file upload info to datastore failed..')
       return json.dumps(blobs.to_dict())
-
-
