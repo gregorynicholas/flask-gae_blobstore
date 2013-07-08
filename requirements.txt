@@ -1,3 +1,2 @@
-flask
-blinker
-https://github.com/gregorynicholas/flask-gae_tests/tarball/master
+flask==0.9
+blinker==1.8.3
