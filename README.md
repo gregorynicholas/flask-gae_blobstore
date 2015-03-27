@@ -10,7 +10,7 @@ app engine.
 
 * [docs](http://gregorynicholas.github.io/flask-gae_blobstore)
 * [source](http://github.com/gregorynicholas/flask-gae_blobstore)
-* [package](http://packages.python.org/flask-gae_blobstore)
+* [package](https://pypi.python.org/pypi/flask-gae_blobstore)
 * [changelog](https://github.com/gregorynicholas/flask-gae_blobstore/blob/master/CHANGES.md)
 * [travis-ci](http://travis-ci.org/gregorynicholas/flask-gae_blobstore)
 
