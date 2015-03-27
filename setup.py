@@ -46,7 +46,7 @@ setup(
     'flask==0.9',
   ],
   tests_require=[
-    'flask_gae_tests==1.0.1',
+    'flask-funktional-gae==0.0.1',
   ],
   dependency_links=[
   ],
