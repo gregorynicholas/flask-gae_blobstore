@@ -1,0 +1,6 @@
+include README.md
+include CHANGES.md
+include LICENSE
+include requirements.txt
+include tests/blob.png
+include tests/test.jpg

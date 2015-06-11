@@ -1,36 +1,44 @@
 flask-gae_blobstore
 ===================
 
-flask extension for working with the blobstore & files apis on
-app engine.
+[flask](http://flask.pocoo.org) extension to make working with the `blobstore`
+and `files` apis on [google app-engine](http://appengine.google.com) more enjoyable
 
 
-[![Build Status](https://secure.travis-ci.org/gregorynicholas/flask-gae_blobstore.png?branch=master)](https://travis-ci.org/gregorynicholas/flask-gae_blobstore)
+<br>
+**build-status:**
+
+`master ` [![travis-ci build-status: master](https://secure.travis-ci.org/gregorynicholas/flask-gae_blobstore.svg?branch=master)](https://travis-ci.org/gregorynicholas/flask-gae_blobstore)
+<br>
+`develop` [![travis-ci build-status: develop](https://secure.travis-ci.org/gregorynicholas/flask-gae_blobstore.svg?branch=develop)](https://travis-ci.org/gregorynicholas/flask-gae_blobstore)
 
 
-* [docs](http://gregorynicholas.github.io/flask-gae_blobstore)
+**links:**
+
+* [homepage](http://gregorynicholas.github.io/flask-gae_blobstore)
 * [source](http://github.com/gregorynicholas/flask-gae_blobstore)
-* [package](https://pypi.python.org/pypi/flask-gae_blobstore)
+* [python-package](http://packages.python.org/flask-gae_blobstore)
+* [github-issues](https://github.com/gregorynicholas/flask-gae_blobstore/issues)
 * [changelog](https://github.com/gregorynicholas/flask-gae_blobstore/blob/master/CHANGES.md)
 * [travis-ci](http://travis-ci.org/gregorynicholas/flask-gae_blobstore)
 
 
-----
+<br>
+-----
+<br>
 
 
 ### getting started
 
-install with *pip*:
 
-    pip install flask-gae_blobstore
+install with pip:
+
+    $ pip install flask-gae_blobstore
 
 
+<br>
 -----
-
-
-### overview
-
-* [todo]
+<br>
 
 
 ### features
@@ -38,7 +46,9 @@ install with *pip*:
 * [todo]
 
 
+<br>
 -----
+<br>
 
 
 ### example usage

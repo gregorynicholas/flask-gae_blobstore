@@ -1,4 +1,4 @@
-flask-gae_blobstore Changelog
+flask-gae_blobstore changelog
 =============================
 
 v1.0.1, 2013-01-24 -- Fixed setup.py package_data.
