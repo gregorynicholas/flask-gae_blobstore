@@ -43,7 +43,7 @@ setup(
   zip_safe=False,
   platforms='any',
   install_requires=[
-    'flask==0.9',
+    'flask==1.0',
   ],
   tests_require=[
     'flask-funktional-gae==0.0.1',
